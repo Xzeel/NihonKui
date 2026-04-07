@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { animate } from 'motion';
+import { motion } from 'motion/react';
 
 interface QuizHeaderProps {
   currentIndex: number;
@@ -11,22 +10,17 @@ interface QuizHeaderProps {
 }
 
 export default function QuizHeader({ currentIndex, total, score, streak, timer, selectedAnswer }: QuizHeaderProps) {
-  const progressRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (progressRef.current) {
-      const pct = ((currentIndex + (selectedAnswer ? 1 : 0)) / total) * 100;
-      animate(progressRef.current, { width: `${pct}%` }, { duration: 0.5, easing: 'ease-in-out' });
-    }
-  }, [currentIndex, total, selectedAnswer]);
-
+  const pct = ((currentIndex + (selectedAnswer ? 1 : 0)) / total) * 100;
   const isLow = timer <= 10 && !selectedAnswer;
 
   return (
     <div className="sticky top-0 z-50 bg-card/90 backdrop-blur-md border-b border-border">
-      {/* Progress bar */}
       <div className="h-1.5 bg-muted w-full">
-        <div ref={progressRef} className="h-full bg-primary rounded-r-full" style={{ width: '0%' }} />
+        <motion.div
+          className="h-full bg-primary rounded-r-full"
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+        />
       </div>
 
       <div className="flex items-center justify-between px-4 py-3 max-w-2xl mx-auto">

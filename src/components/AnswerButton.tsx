@@ -1,5 +1,4 @@
-import { useRef, useCallback } from 'react';
-import { animate } from 'motion';
+import { motion } from 'motion/react';
 
 interface AnswerButtonProps {
   letter: string;
@@ -10,31 +9,12 @@ interface AnswerButtonProps {
 }
 
 export default function AnswerButton({ letter, text, selected, correctAnswer, onSelect }: AnswerButtonProps) {
-  const btnRef = useRef<HTMLButtonElement>(null);
   const isDisabled = selected !== null;
   const isSelected = selected === text;
   const isCorrect = text === correctAnswer;
   const showResult = selected !== null;
 
-  const handleClick = useCallback(() => {
-    if (isDisabled) return;
-    if (btnRef.current) {
-      animate(btnRef.current, { scale: [1, 0.95, 1] }, { duration: 0.15 });
-    }
-    onSelect(text);
-  }, [isDisabled, onSelect, text]);
-
-  const handleMouseEnter = useCallback(() => {
-    if (isDisabled || !btnRef.current) return;
-    animate(btnRef.current, { scale: 1.03 }, { duration: 0.15, easing: 'ease-out' });
-  }, [isDisabled]);
-
-  const handleMouseLeave = useCallback(() => {
-    if (isDisabled || !btnRef.current) return;
-    animate(btnRef.current, { scale: 1 }, { duration: 0.15, easing: 'ease-out' });
-  }, [isDisabled]);
-
-  let classes = 'flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-colors font-heading min-h-[56px]';
+  let classes = 'flex items-center gap-3 p-4 rounded-xl border-2 text-left transition-colors font-heading min-h-[56px] w-full';
   if (showResult && isCorrect) {
     classes += ' border-success bg-success/10 text-success';
   } else if (showResult && isSelected && !isCorrect) {
@@ -46,12 +26,11 @@ export default function AnswerButton({ letter, text, selected, correctAnswer, on
   }
 
   return (
-    <button
-      ref={btnRef}
-      onClick={handleClick}
+    <motion.button
+      whileHover={isDisabled ? {} : { scale: 1.03 }}
+      whileTap={isDisabled ? {} : { scale: 0.97 }}
+      onClick={() => !isDisabled && onSelect(text)}
       disabled={isDisabled}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       className={classes}
     >
       <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
@@ -62,6 +41,6 @@ export default function AnswerButton({ letter, text, selected, correctAnswer, on
         {showResult && isCorrect ? '✓' : showResult && isSelected && !isCorrect ? '✗' : letter}
       </span>
       <span className="font-medium">{text}</span>
-    </button>
+    </motion.button>
   );
 }

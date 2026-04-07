@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { animate } from 'motion';
+import { motion } from 'motion/react';
 import { QuizAnswer } from '@/hooks/useQuiz';
 import { Question } from '@/data/quizData';
 import SakuraConfetti from './SakuraConfetti';
@@ -22,9 +22,17 @@ function getMessage(pct: number) {
   return { text: 'Jangan menyerah! Coba lagi ya.', jp: 'また挑戦しよう！', emoji: '🌱' };
 }
 
+const stagger = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+};
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
 export default function ResultScreen({ score, total, answers, questions, totalTime, maxStreak, onRestart, onHome }: ResultScreenProps) {
   const scoreRef = useRef<HTMLSpanElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   const pct = Math.round((score / total) * 100);
@@ -32,15 +40,6 @@ export default function ResultScreen({ score, total, answers, questions, totalTi
   const wrongAnswers = answers.filter(a => !a.isCorrect);
 
   useEffect(() => {
-    // Animate entrance
-    if (containerRef.current) {
-      const els = containerRef.current.querySelectorAll('[data-anim]');
-      els.forEach((el, i) => {
-        animate(el as HTMLElement, { opacity: [0, 1], y: [20, 0] }, { duration: 0.4, delay: i * 0.1 });
-      });
-    }
-
-    // Count up score
     if (scoreRef.current) {
       const el = scoreRef.current;
       const duration = 1200;
@@ -67,17 +66,17 @@ export default function ResultScreen({ score, total, answers, questions, totalTi
   return (
     <>
       {pct >= 70 && <SakuraConfetti />}
-      <div ref={containerRef} className="flex flex-col items-center min-h-screen px-4 py-12 bg-seigaiha">
-        <div data-anim className="text-6xl mb-2 opacity-0">{msg.emoji}</div>
-        <div data-anim className="text-center mb-6 opacity-0">
+      <motion.div variants={stagger} initial="hidden" animate="show" className="flex flex-col items-center min-h-screen px-4 py-12 bg-seigaiha">
+        <motion.div variants={fadeUp} className="text-6xl mb-2">{msg.emoji}</motion.div>
+        <motion.div variants={fadeUp} className="text-center mb-6">
           <div className="text-7xl md:text-8xl font-heading font-bold text-primary mb-1">
             <span ref={scoreRef}>0</span><span className="text-3xl text-muted-foreground">/{total}</span>
           </div>
           <p className="text-xl font-heading font-semibold text-foreground mt-2">{msg.text}</p>
           <p className="text-2xl font-jp font-bold text-secondary mt-1">{msg.jp}</p>
-        </div>
+        </motion.div>
 
-        <div data-anim className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-lg mb-8 opacity-0">
+        <motion.div variants={fadeUp} className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-lg mb-8">
           {[
             { label: 'Benar', value: score, color: 'text-success' },
             { label: 'Salah', value: total - score, color: 'text-destructive' },
@@ -89,16 +88,16 @@ export default function ResultScreen({ score, total, answers, questions, totalTi
               <div className="text-xs text-muted-foreground">{s.label}</div>
             </div>
           ))}
-        </div>
+        </motion.div>
 
         {maxStreak >= 2 && (
-          <div data-anim className="text-sm text-secondary font-heading font-semibold mb-6 opacity-0">
+          <motion.div variants={fadeUp} className="text-sm text-secondary font-heading font-semibold mb-6">
             🔥 Streak terpanjang: {maxStreak} jawaban berturut-turut
-          </div>
+          </motion.div>
         )}
 
         {wrongAnswers.length > 0 && (
-          <div data-anim className="w-full max-w-lg mb-8 opacity-0">
+          <motion.div variants={fadeUp} className="w-full max-w-lg mb-8">
             <h3 className="font-heading font-semibold text-foreground mb-3">Review Jawaban Salah</h3>
             <div className="space-y-2">
               {wrongAnswers.map((a, i) => {
@@ -125,21 +124,21 @@ export default function ResultScreen({ score, total, answers, questions, totalTi
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         )}
 
-        <div data-anim className="flex flex-col sm:flex-row gap-3 w-full max-w-lg opacity-0">
-          <button onClick={onRestart} className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground font-heading font-semibold hover:opacity-90 transition-opacity">
+        <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3 w-full max-w-lg">
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onRestart} className="flex-1 py-3 rounded-xl bg-primary text-primary-foreground font-heading font-semibold hover:opacity-90 transition-opacity">
             Coba Lagi
-          </button>
-          <button onClick={onHome} className="flex-1 py-3 rounded-xl bg-muted text-foreground font-heading font-semibold hover:opacity-90 transition-opacity border border-border">
+          </motion.button>
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onHome} className="flex-1 py-3 rounded-xl bg-muted text-foreground font-heading font-semibold hover:opacity-90 transition-opacity border border-border">
             Ganti Level
-          </button>
-          <button onClick={handleShare} className="flex-1 py-3 rounded-xl bg-secondary text-secondary-foreground font-heading font-semibold hover:opacity-90 transition-opacity">
+          </motion.button>
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={handleShare} className="flex-1 py-3 rounded-xl bg-secondary text-secondary-foreground font-heading font-semibold hover:opacity-90 transition-opacity">
             Bagikan Skor
-          </button>
-        </div>
-      </div>
+          </motion.button>
+        </motion.div>
+      </motion.div>
     </>
   );
 }
