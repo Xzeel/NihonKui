@@ -37,6 +37,7 @@ const Index = () => {
               questionKey={state.currentIndex}
             />
           </div>
+          <Footer />
         </div>
       )}
 
