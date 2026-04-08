@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { useCallback } from 'react';
 import { Level, levelInfo } from '@/data/quizData';
+import Footer from './Footer';
 
 interface StartScreenProps {
   onStart: (level: Level) => void;
@@ -57,10 +58,7 @@ export default function StartScreen({ onStart }: StartScreenProps) {
 
       <motion.p variants={fadeUp} className="text-xs text-muted-foreground">10 soal per level • 30 detik per soal</motion.p>
 
-      <motion.footer variants={fadeUp} className="mt-auto pt-12 pb-6 text-center">
-        <p className="text-sm text-muted-foreground">© 2026 Japanese Quiz. All Rights Reserved.</p>
-        <p className="text-xs text-muted-foreground/70 mt-1">Dibuat dengan 💖 oleh XzeelArcadia</p>
-      </motion.footer>
+      <Footer />
     </motion.div>
   );
 }

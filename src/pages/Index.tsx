@@ -4,6 +4,8 @@ import QuizHeader from '@/components/QuizHeader';
 import QuestionCard from '@/components/QuestionCard';
 import ResultScreen from '@/components/ResultScreen';
 import DarkModeToggle from '@/components/DarkModeToggle';
+import MusicToggle from '@/components/MusicToggle';
+import Footer from '@/components/Footer';
 
 const Index = () => {
   const { state, startQuiz, selectAnswer, nextQuestion, restart, goHome } = useQuiz();
@@ -11,6 +13,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <DarkModeToggle />
+      <MusicToggle />
 
       {state.phase === 'start' && <StartScreen onStart={startQuiz} />}
 
@@ -34,6 +37,7 @@ const Index = () => {
               questionKey={state.currentIndex}
             />
           </div>
+          <Footer />
         </div>
       )}
 

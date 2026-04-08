@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { QuizAnswer } from '@/hooks/useQuiz';
 import { Question } from '@/data/quizData';
 import SakuraConfetti from './SakuraConfetti';
+import Footer from './Footer';
 
 interface ResultScreenProps {
   score: number;
@@ -138,6 +139,8 @@ export default function ResultScreen({ score, total, answers, questions, totalTi
             Bagikan Skor
           </motion.button>
         </motion.div>
+
+        <Footer />
       </motion.div>
     </>
   );
